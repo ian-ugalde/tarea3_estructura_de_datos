@@ -6,16 +6,9 @@ GraphQuest es un juego de consola escrito en C en el que el jugador recorre un l
  
 El laberinto se carga desde un archivo CSV (`data/graphquest.csv`).
  
-Organización del código:
- 
-- `main.c`: menú principal (cargar laberinto, iniciar partida, salir).
-- `juego.c` / `juego.h`: lógica de la partida (estado del jugador, recoger, descartar, avanzar, reiniciar, victoria y derrota).
-- `grafo.c` / `grafo.h`: TDA Grafo (tipos, carga desde CSV, vecinos y liberación de memoria).
-- `entrada.c` / `entrada.h`: lectura segura de números y líneas desde el teclado.
-- `tdas/`: TDAs entregados por el curso (sin modificar).
 ## TDAs utilizados
  
-El proyecto usa dos TDAs: Lista (`List`, entregada por el curso) y un Grafo explícito propio (`grafo.h` / `grafo.c`).
+El proyecto usa dos TDAs: Lista (`Listas enlazadas`), y un Grafo explícito propio (`grafo.h` / `grafo.c`).
  
 **Lista enlazada (`List`)**: se usa de tres formas.
 - Cada escenario guarda sus ítems en una `List` de `Item` (nombre, valor, peso y una marca `recogido`).
@@ -28,26 +21,8 @@ Los ítems recogidos no se borran del escenario: se marcan como `recogido` y dej
 - **Aristas:** `conexiones[dir]` guarda el ID del escenario al que se llega en esa dirección (`ARRIBA`, `ABAJO`, `IZQUIERDA`, `DERECHA`), o `-1` si no hay camino. Las aristas son dirigidas: en el archivo de ejemplo se puede pasar desde el escenario 12 y desde el 15 a la Salida (16), pero la Salida no tiene conexiones de vuelta.
 - **Grafo:** la estructura `Grafo` contiene un arreglo `escenarios` indexado por ID (de tamaño ID máximo + 1; las posiciones sin escenario quedan en `NULL`), la cantidad de escenarios y un puntero `inicio` al escenario inicial, que es el primero que aparece en el archivo.
 - **Moverse entre escenarios:** `grafo_vecino(grafo, escenario, dir)` toma el ID guardado en `conexiones[dir]` y entrega el escenario accediendo directamente al arreglo, por lo que cada movimiento cuesta O(1). Si no hay conexión, retorna `NULL`.
-- **Carga (`grafo_cargar`):** se hace en dos pasos, con costo total O(n) para n escenarios. Primero se lee el archivo fila por fila y se crea un `Escenario` por cada fila válida (los ítems se separan por `;` y cada uno se interpreta como `nombre,valor,peso`), calculando el ID máximo. Luego se crea el arreglo indexado por ID y cada escenario se ubica en su posición.
-- **Memoria:** `grafo_liberar` libera ítems, listas, textos y escenarios. Se llama al volver a cargar el laberinto y al salir del programa.
-No se usó el Map del curso para buscar escenarios por ID porque por dentro es una lista enlazada (cada búsqueda recorre nodo por nodo). Con un arreglo indexado por ID el acceso es directo.
- 
-## Formato del archivo CSV
- 
-Una fila por escenario, con encabezado en la primera línea:
- 
-| Columna | Contenido |
-|---|---|
-| `ID` | Identificador entero positivo del escenario |
-| `Nombre` | Nombre del escenario |
-| `Descripcion` | Texto descriptivo (puede ir entre comillas y contener comas) |
-| `Items` | Ítems separados por `;`, cada uno como `nombre,valor,peso`. Vacío si no hay ítems |
-| `Arriba`, `Abajo`, `Izquierda`, `Derecha` | ID del escenario al que se llega en esa dirección, o `-1` si no hay salida |
-| `EsFinal` | `Si` para el escenario de salida, `No` en los demás |
- 
-En el archivo de ejemplo los ítems vienen como **nombre, valor (puntos), peso (kg)**: `Libro antiguo,6,2` es un libro de 6 puntos y 2 kg, igual que en el diagrama del enunciado. El enunciado escribe "(nombre, peso, valor)", pero los datos y el diagrama siguen el orden valor, peso, y así se interpretan en este programa.
- 
-Las filas con menos de 9 campos o con ID menor a 1 se ignoran.
+- **Carga (`grafo_cargar`):** se hace en dos pasos, con costo total O(n) para n escenarios, primero se lee el archivo fila por fila y se crea un `Escenario` por cada fila válida (los ítems se separan por `;` y cada uno se interpreta como `nombre,valor,peso`), calculando el ID máximo, luego se crea el arreglo indexado por ID y cada escenario se ubica en su posición.
+- **Memoria:** `grafo_liberar` libera ítems, listas, textos y escenarios, se llama al volver a cargar el laberinto y al salir del programa.
  
 ## Reglas del juego
  
@@ -104,7 +79,7 @@ gcc tdas/*.c *.c -Wno-unused-result -o tarea3
 - Si el costo de avanzar supera el tiempo restante, el movimiento se rechaza y la partida no termina sola hasta que el tiempo llegue a 0; el jugador puede descartar ítems para bajar el costo, reiniciar o salir.
 - El laberinto siempre se carga desde `data/graphquest.csv` (la ruta no se ingresa por teclado).
 - Las filas del CSV con formato inválido se ignoran sin mostrar ningún aviso.
-- No se implementó el modo multijugador colaborativo, que es opcional para trabajos en pareja (este trabajo es individual).
+- No se implementó el modo multijugador ya que es un trabajo individual
 ### A mejorar
  
 - Permitir ingresar por teclado la ruta del archivo CSV.
