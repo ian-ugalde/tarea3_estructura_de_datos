@@ -1,5 +1,2 @@
-[nix]
-channel = "stable-25_05"
-
-[agent]
-expertMode = true
+compile = "gcc tdas/*.c *.c -Wno-unused-result -o tarea3"
+run = "./tarea3"
