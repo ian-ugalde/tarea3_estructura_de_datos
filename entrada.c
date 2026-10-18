@@ -20,7 +20,7 @@ int leerEntero(const char *mensaje) {
     size_t largo = strlen(linea);
     if (largo == sizeof(linea) - 1 && linea[largo - 1] != '\n') {
       descartarLinea();
-      puts("Entrada invalida, intente de nuevo.");
+      puts("Entrada inválida, intente de nuevo.");
       continue;
     }
 
@@ -32,8 +32,16 @@ int leerEntero(const char *mensaje) {
       if (*fin == '\n' || *fin == '\0')
         return (int)numero;
     }
-    puts("Entrada invalida, intente de nuevo.");
+    puts("Entrada inválida, intente de nuevo.");
   }
+}
+
+void leerLinea(const char *mensaje, char *linea, int tam) {
+  printf("%s", mensaje);
+  if (fgets(linea, tam, stdin) == NULL)
+    exit(0);
+  if (strchr(linea, '\n') == NULL)
+    descartarLinea();
 }
 
 void esperarEnter() {

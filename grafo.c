@@ -17,6 +17,7 @@ static void cargarItems(Escenario *escenario, char *texto) {
       item->nombre = strdup(nombre);
       item->valor = valor;
       item->peso = peso;
+      item->recogido = 0;
       list_pushBack(escenario->items, item);
     }
     free(parte);
@@ -95,22 +96,15 @@ Escenario *grafo_vecino(const Grafo *grafo, const Escenario *escenario,
   return grafo->escenarios[id];
 }
 
-void grafo_imprimir(const Grafo *grafo) {
+void grafo_reiniciarItems(Grafo *grafo) {
   for (int i = 0; i < grafo->capacidad; i++) {
     Escenario *e = grafo->escenarios[i];
     if (e == NULL)
       continue;
 
-    printf("[%d] %s%s\n", e->id, e->nombre, e->esFinal ? " (FINAL)" : "");
-    printf("    Items:");
-    Item *item = list_first(e->items);
-    if (item == NULL)
-      printf(" ninguno");
-    for (; item != NULL; item = list_next(e->items))
-      printf(" %s (%d pts, %d kg);", item->nombre, item->valor, item->peso);
-    printf("\n    Arriba:%d Abajo:%d Izquierda:%d Derecha:%d\n",
-           e->conexiones[ARRIBA], e->conexiones[ABAJO],
-           e->conexiones[IZQUIERDA], e->conexiones[DERECHA]);
+    for (Item *item = list_first(e->items); item != NULL;
+         item = list_next(e->items))
+      item->recogido = 0;
   }
 }
 

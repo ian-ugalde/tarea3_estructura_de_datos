@@ -1,5 +1,6 @@
 #include "entrada.h"
 #include "grafo.h"
+#include "juego.h"
 #include "tdas/extra.h"
 #include <stdio.h>
 
@@ -7,7 +8,7 @@
 
 int main() {
   Grafo *grafo = NULL;
-  int opcion;
+  int salir = 0;
 
   do {
     limpiarPantalla();
@@ -17,7 +18,7 @@ int main() {
     puts("1) Cargar laberinto desde archivo CSV");
     puts("2) Iniciar partida");
     puts("3) Salir");
-    opcion = leerEntero("Ingrese su opcion: ");
+    int opcion = leerEntero("Ingrese su opción: ");
 
     switch (opcion) {
     case 1: {
@@ -29,24 +30,24 @@ int main() {
       grafo_liberar(grafo);
       grafo = nuevo;
       printf("Laberinto cargado: %d escenarios.\n", grafo->cantidad);
-      grafo_imprimir(grafo);
       break;
     }
     case 2:
       if (grafo == NULL)
-        puts("Primero debe cargar el laberinto (opcion 1).");
+        puts("Primero debe cargar el laberinto (opción 1).");
       else
-        puts("Partida pendiente de implementar.");
+        salir = jugar(grafo);
       break;
     case 3:
+      salir = 1;
       break;
     default:
-      puts("Opcion invalida.");
+      puts("Opción inválida.");
     }
 
-    if (opcion != 3)
+    if (!salir)
       esperarEnter();
-  } while (opcion != 3);
+  } while (!salir);
 
   grafo_liberar(grafo);
   return 0;
