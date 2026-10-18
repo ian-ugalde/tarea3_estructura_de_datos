@@ -63,7 +63,7 @@ static void mostrarEstado(const Grafo *grafo, const Jugador *j) {
   n = 0;
   for (int d = 0; d < DIRECCIONES; d++)
     if (grafo_vecino(grafo, j->actual, d) != NULL)
-      printf("%s%s", n++ ? ", " : " ", NOMBRES_DIRECCION[d]);
+      printf("%s%d) %s", n++ ? ", " : " ", d + 1, NOMBRES_DIRECCION[d]);
   if (n == 0)
     printf(" (ninguna)");
   printf("\nCosto de avanzar: %d de tiempo\n", costoAvanzar(j->peso));
@@ -167,11 +167,10 @@ static void descartar(Jugador *j) {
 }
 
 static void avanzar(const Grafo *grafo, Jugador *j) {
-  Direccion disponibles[DIRECCIONES];
   int n = 0;
   for (int d = 0; d < DIRECCIONES; d++)
     if (grafo_vecino(grafo, j->actual, d) != NULL)
-      disponibles[n++] = d;
+      n++;
 
   if (n == 0) {
     puts("No hay direcciones disponibles desde este escenario.");
@@ -185,16 +184,18 @@ static void avanzar(const Grafo *grafo, Jugador *j) {
     return;
   }
 
-  for (int i = 0; i < n; i++)
-    printf("%d) %s\n", i + 1, NOMBRES_DIRECCION[disponibles[i]]);
+  for (int d = 0; d < DIRECCIONES; d++)
+    if (grafo_vecino(grafo, j->actual, d) != NULL)
+      printf("%d) %s\n", d + 1, NOMBRES_DIRECCION[d]);
   int opcion = leerEntero("Elija una dirección (0 para cancelar): ");
 
   if (opcion == 0) {
     puts("Acción cancelada.");
-  } else if (opcion < 0 || opcion > n) {
+  } else if (opcion < 1 || opcion > DIRECCIONES ||
+             grafo_vecino(grafo, j->actual, opcion - 1) == NULL) {
     puts("Dirección inválida.");
   } else {
-    j->actual = grafo_vecino(grafo, j->actual, disponibles[opcion - 1]);
+    j->actual = grafo_vecino(grafo, j->actual, opcion - 1);
     j->tiempo -= costo;
     printf("Llegaste a: %s. Tiempo usado: %d.\n", j->actual->nombre, costo);
   }

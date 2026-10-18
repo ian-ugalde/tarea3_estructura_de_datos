@@ -54,7 +54,7 @@ Las filas con menos de 9 campos o con ID menor a 1 se ignoran.
 - **Tiempo inicial:** 10 (constante `TIEMPO_INICIAL` en `juego.c`).
 - **Recoger ítem(s):** se pueden elegir uno o varios ítems del escenario en una sola acción. Cuesta 1 de tiempo, sin importar cuántos ítems se recojan.
 - **Descartar ítem(s):** se pueden elegir uno o varios ítems del inventario en una sola acción. Cuesta 1 de tiempo. Los ítems descartados se pierden y su puntaje se descuenta.
-- **Avanzar:** cuesta `ceil((peso total del inventario + 1) / 10)` de tiempo. Con el inventario entre 0 y 9 kg cada movimiento cuesta 1; entre 10 y 19 kg cuesta 2; entre 20 y 29 kg cuesta 3, y así sucesivamente. Si el costo es mayor que el tiempo restante, el movimiento no se realiza.
+- **Avanzar:** se elige una dirección por su número fijo (1 Arriba, 2 Abajo, 3 Izquierda, 4 Derecha) y cuesta `ceil((peso total del inventario + 1) / 10)` de tiempo. Con el inventario entre 0 y 9 kg cada movimiento cuesta 1; entre 10 y 19 kg cuesta 2; entre 20 y 29 kg cuesta 3, y así sucesivamente. Si el costo es mayor que el tiempo restante, el movimiento no se realiza.
 - **Puntaje:** suma de los valores de los ítems que el jugador lleva en su inventario.
 - **Victoria:** llegar al escenario de salida. Si se llega con el tiempo justo (queda en 0), cuenta como victoria. Se muestran los ítems del inventario y el puntaje final.
 - **Derrota:** que el tiempo llegue a 0 estando en un escenario que no es la salida.
@@ -94,7 +94,7 @@ gcc tdas/*.c *.c -Wno-unused-result -o tarea3
 - **Iniciar Partida:** comienza en la entrada principal y muestra en cada turno la descripción del escenario, los ítems disponibles, el tiempo restante, el inventario (ítems, peso total y puntaje) y las direcciones posibles. Se puede jugar varias veces seguidas.
 - **Recoger ítem(s):** permite elegir uno o varios ítems indicando sus números separados por espacios. Descuenta 1 de tiempo.
 - **Descartar ítem(s):** permite elegir uno o varios ítems del inventario. Descuenta 1 de tiempo y actualiza peso y puntaje.
-- **Avanzar en una dirección:** muestra solo las direcciones válidas, descuenta el tiempo según el peso del inventario y detecta la llegada a la salida (victoria) o el fin del tiempo (derrota).
+- **Avanzar en una dirección:** muestra solo las direcciones válidas, con numeración fija (1 Arriba, 2 Abajo, 3 Izquierda, 4 Derecha), descuenta el tiempo según el peso del inventario y detecta la llegada a la salida (victoria) o el fin del tiempo (derrota).
 - **Reiniciar Partida:** vuelve al estado inicial, incluyendo los ítems recogidos.
 - **Salir del Juego:** cierra la aplicación liberando la memoria.
 - **Validación de entradas:** los menús rechazan texto y opciones fuera de rango, y la selección de ítems rechaza números inexistentes. Una entrada inválida o cancelada (0 o Enter vacío) no consume tiempo.
@@ -143,7 +143,7 @@ Inventario:
   (vacío)
 Peso total: 0 kg | Puntaje acumulado: 0
  
-Direcciones disponibles: Abajo
+Direcciones disponibles: 2) Abajo
 Costo de avanzar: 1 de tiempo
 ----------------------------------------
 1) Recoger ítem(s)
@@ -158,10 +158,16 @@ Ingrese su opción:
  
 ```
 Ingrese su opción: 3
-1) Abajo
-Elija una dirección (0 para cancelar): 1
+2) Abajo
+Elija una dirección (0 para cancelar): 2
 Llegaste a: Cocina. Tiempo usado: 1.
 Presione Enter para continuar...
+```
+ 
+Las direcciones tienen siempre el mismo número en todos los escenarios: 1 = Arriba, 2 = Abajo, 3 = Izquierda, 4 = Derecha. El estado y el menú de avance solo muestran las que existen en el escenario actual. Por ejemplo, en la Cocina:
+ 
+```
+Direcciones disponibles: 1) Arriba, 2) Abajo, 4) Derecha
 ```
  
 ### Paso 4: Recoger ítems
